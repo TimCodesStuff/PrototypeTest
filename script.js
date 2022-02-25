@@ -524,6 +524,44 @@ levels = [
     ],    
 ];
 
+function isOutOfBounds(row, column){
+    if(row < 0 || column < 0 || row >= levels[level].length || column >= levels[level][row].length){
+        return true;
+    }
+    return false;
+}
+
+function getTileAbove(row, column)
+{
+    
+    if(isOutOfBounds(row-1, column)){
+        return null;
+    }    
+    return levels[level][row-1][column];
+}
+
+function getTileBelow(row, column)
+{
+    if(isOutOfBounds(row+1, column)){
+        return null;
+    }    
+    return levels[level][row+1][column];
+}
+
+function getTileToLeft(row, column){
+    if(isOutOfBounds(row, column-1)){
+        return null;
+    }    
+    return levels[level][row][column-1];
+}
+
+function getTileToRight(row, column){
+    if(isOutOfBounds(row, column+1)){
+        return null;
+    }    
+    return levels[level][row][column+1];
+}
+
 // apply keys to objects and define them + image selection algorithim
 var loadLevels = function() {
     for (var i = 0; i < levels[level].length; i ++) {
@@ -537,37 +575,37 @@ var loadLevels = function() {
             } 
             if (levels[level][i][j] === '-') {
                 // select image relative to other blocks
-                if (levels[level][i][j + 1] === '-' && levels[level][i][j - 1] === '-' && levels[level][i - (i === 0 ? 0 : 1)][j] !== '-' && levels[level][i + (i === levels[level].length ? 0 : 1)][j] === '-') {
+                if (getTileToRight(i,j) === '-' && getTileToLeft(i,j) === '-' && getTileAbove(i,j) !== '-' && getTileBelow(i,j) === '-') {
                     grounds.add(j * blockSize, i * blockSize, blockSize - 10, blockSize, 1);
-                }else if (levels[level][i][j + 1] === '-' && levels[level][i][j - 1] === '-' && levels[level][i - (i === 0 ? 0 : 1)][j] !== '-' && levels[level][i + (i === levels[level].length ? 0 : 1)][j] !== '-') {
+                }else if (getTileToRight(i,j) === '-' && getTileToLeft(i,j) === '-' && getTileAbove(i,j) !== '-' && getTileBelow(i,j) !== '-') {
                     grounds.add(j * blockSize, i * blockSize, blockSize, blockSize, 12);
-                }else if (levels[level][i][j + 1] === '-' && levels[level][i][j - 1] === '-' && levels[level][i - (i === 0 ? 0 : 1)][j] === '-' && levels[level][i + (i === levels[level].length - 1 ? 0 : 1)][j] !== '-') {
+                }else if (getTileToRight(i,j) === '-' && getTileToLeft(i,j) === '-' && getTileAbove(i,j) === '-' && getTileBelow(i,j) !== '-') {
                     grounds.add(j * blockSize, i * blockSize, blockSize, blockSize, 7);
-                }else if (levels[level][i][j - 1] !== '-' && levels[level][i][j + 1] === '-' && levels[level][i - (i === 0 ? 0 : 1)][j] !== '-' && levels[level][i + (i === levels[level].length ? 0 : 1)][j] === '-') {
+                }else if (getTileToLeft(i,j) !== '-' && getTileToRight(i,j) === '-' && getTileAbove(i,j) !== '-' && getTileBelow(i,j) === '-') {
                     grounds.add(j * blockSize, i * blockSize, blockSize, blockSize, 0);
-                }else if (levels[level][i][j - 1] === '-' && levels[level][i][j + 1] !== '-' && levels[level][i - (i === 0 ? 0 : 1)][j] !== '-' && levels[level][i + (i === levels[level].length ? 0 : 1)][j] === '-') {
+                }else if (getTileToLeft(i,j) === '-' && getTileToRight(i,j) !== '-' && getTileAbove(i,j) !== '-' && getTileBelow(i,j) === '-') {
                     grounds.add(j * blockSize, i * blockSize, blockSize, blockSize, 2);
-                }else if (levels[level][i][j - 1] !== '-' && levels[level][i][j + 1] !== '-' && levels[level][i - (i === 0 ? 0 : 1)][j] !== '-' && levels[level][i + (i === levels[level].length ? 0 : 1)][j] !== '-') {
+                }else if (getTileToLeft(i,j) !== '-' && getTileToRight(i,j) !== '-' && getTileAbove(i,j) !== '-' && getTileBelow(i,j) !== '-') {
                     grounds.add(j * blockSize, i * blockSize, blockSize, blockSize, 11);
-                }else if (levels[level][i][j - 1] !== '-' && levels[level][i][j + 1] !== '-' && levels[level][i - (i === 0 ? 0 : 1)][j] === '-' && levels[level][i + (i === levels[level].length ? 0 : 1)][j] === '-') {
+                }else if (getTileToLeft(i,j) !== '-' && getTileToRight(i,j) !== '-' && getTileAbove(i,j) === '-' && getTileBelow(i,j) === '-') {
                     grounds.add(j * blockSize, i * blockSize, blockSize, blockSize, 10);
-                }else if (levels[level][i][j + 1] !== '-' && levels[level][i][j - 1] !== '-' && levels[level][i - (i === 0 ? 0 : 1)][j] !== '-' && levels[level][i + (i === levels[level].length ? 0 : 1)][j] === '-') {
+                }else if (getTileToRight(i,j) !== '-' && getTileToLeft(i,j) !== '-' && getTileAbove(i,j) !== '-' && getTileBelow(i,j) === '-') {
                     grounds.add(j * blockSize, i * blockSize, blockSize, blockSize, 15);
-                }else if (levels[level][i][j + 1] !== '-' && levels[level][i][j - 1] === '-' && levels[level][i - (i === 0 ? 0 : 1)][j] === '-' && levels[level][i + (i === levels[level].length ? 0 : 1)][j] !== '-') {
+                }else if (getTileToRight(i,j) !== '-' && getTileToLeft(i,j) === '-' && getTileAbove(i,j) === '-' && getTileBelow(i,j) !== '-') {
                     grounds.add(j * blockSize, i * blockSize, blockSize, blockSize, 8);
-                }else if (levels[level][i][j + 1] === '-' && levels[level][i][j - 1] !== '-' && levels[level][i - (i === 0 ? 0 : 1)][j] === '-' && levels[level][i + (i === levels[level].length ? 0 : 1)][j] !== '-') {
+                }else if (getTileToRight(i,j) === '-' && getTileToLeft(i,j) !== '-' && getTileAbove(i,j) === '-' && getTileBelow(i,j) !== '-') {
                     grounds.add(j * blockSize, i * blockSize, blockSize, blockSize, 6);
-                }else if (levels[level][i][j + 1] === '-' && levels[level][i][j - 1] !== '-' && levels[level][i - (i === 0 ? 0 : 1)][j] === '-' && levels[level][i + (i === levels[level].length ? 0 : 1)][j] === '-') {
+                }else if (getTileToRight(i,j) === '-' && getTileToLeft(i,j) !== '-' && getTileAbove(i,j) === '-' && getTileBelow(i,j) === '-') {
                     grounds.add(j * blockSize, i * blockSize, blockSize, blockSize, 3);
-                }else if (levels[level][i][j + 1] !== '-' && levels[level][i][j - 1] === '-' && levels[level][i - (i === 0 ? 0 : 1)][j] === '-' && levels[level][i + (i === levels[level].length ? 0 : 1)][j] === '-') {
+                }else if (getTileToRight(i,j) !== '-' && getTileToLeft(i,j) === '-' && getTileAbove(i,j) === '-' && getTileBelow(i,j) === '-') {
                     grounds.add(j * blockSize, i * blockSize, blockSize, blockSize, 5);
-                }else if (levels[level][i][j + 1] === '-' && levels[level][i][j - 1] === '-' && levels[level][i - (i === 0 ? 0 : 1)][j] === '-' && levels[level][i + (i === levels[level].length - 1 ? 0 : 1)][j] === '-') {
+                }else if (getTileToRight(i,j) === '-' && getTileToLeft(i,j) === '-' && getTileAbove(i,j) === '-' && getTileBelow(i,j) === '-') {
                     grounds.add(j * blockSize, i * blockSize, blockSize, blockSize, 16);
-                }else if (levels[level][i][j + 1] !== '-' && levels[level][i][j - 1] === '-' && levels[level][i - (i === 0 ? 0 : 1)][j] !== '-' && levels[level][i + (i === levels[level].length ? 0 : 1)][j] !== '-') {
+                }else if (getTileToRight(i,j) !== '-' && getTileToLeft(i,j) === '-' && getTileAbove(i,j) !== '-' && getTileBelow(i,j) !== '-') {
                     grounds.add(j * blockSize, i * blockSize, blockSize, blockSize, 13);
-                }else if (levels[level][i][j + 1] === '-' && levels[level][i][j - 1] !== '-' && levels[level][i - (i === 0 ? 0 : 1)][j] !== '-' && levels[level][i + (i === levels[level].length ? 0 : 1)][j] !== '-') {
+                }else if (getTileToRight(i,j) === '-' && getTileToLeft(i,j) !== '-' && getTileAbove(i,j) !== '-' && getTileBelow(i,j) !== '-') {
                     grounds.add(j * blockSize, i * blockSize, blockSize, blockSize, 14);
-                }else if (levels[level][i][j + 1] !== '-' && levels[level][i][j - 1] !== '-' && levels[level][i - (i === 0 ? 0 : 1)][j] === '-' && levels[level][i + (i === levels[level].length ? 0 : 1)][j] !== '-') {
+                }else if (getTileToRight(i,j) !== '-' && getTileToLeft(i,j) !== '-' && getTileAbove(i,j) === '-' && getTileBelow(i,j) !== '-') {
                     grounds.add(j * blockSize, i * blockSize, blockSize, blockSize, 9);
                 }
             }
